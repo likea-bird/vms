@@ -1,3 +1,4 @@
+import Context from '@/store/Context'
 import '../styles/globals.css'
 
 export default function MyApp({ Component, pageProps }) {
@@ -5,7 +6,9 @@ export default function MyApp({ Component, pageProps }) {
 
   return(
     getLayout(
-      <Component {...pageProps} />
+      <Context>
+        <Component {...pageProps} />
+      </Context>
     )
   )
 }

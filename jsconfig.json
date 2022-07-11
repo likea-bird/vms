@@ -6,7 +6,8 @@
       "@/modules/*": ["modules/*"],
       "@/public/*": ["public/*"],
       "@/constants/*": ["utils/constants/*"],
-      "@/helpers/*": ["utils/helpers/*"]
+      "@/lib/*": ["utils/lib/*"],
+      "@/store/*": ["utils/store/*"],
     }
   }
 }

@@ -38,6 +38,10 @@
         @apply bg-white h-11 w-80 text-center text-black rounded-xl font-semibold text-lg;
     }
 
+    .btn-2 {
+        @apply bg-white h-11 px-10 text-center text-black rounded-xl font-semibold text-lg;
+    }
+
     /* input  */
     .sbmt {
         @apply bg-white w-76 h-11 text-lg text-black font-semibold rounded-xl;
@@ -45,7 +49,7 @@
 
     /* icon  */
     .menu-icon {
-      @apply w-8 h-8
+      @apply w-10 h-10
     }
 }
 

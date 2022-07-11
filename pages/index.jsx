@@ -11,7 +11,7 @@ export default function Home() {
 
 Home.getLayout = function getLayout(page) {
   return (
-    <Layout>
+    <Layout route='no-auth'>
       {page}
     </Layout>
   )
