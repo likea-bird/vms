@@ -17,10 +17,10 @@ export default function Chats() {
       <h4 className='text-white uppercase'> Chats</h4>
 
 			<div className='flex flex-col space-y-4'>
-				<MessageCard image='/favicon.ico' groupName='Urul Pottal' lastMessage='hi' onClick={onClick}
+				<MessageCard image='/favicon.ico' groupName='Urul Pottal' lastMessage='hi' onClick={onClick} id='1'
 					lastMessageTime='11:08 am' unReadMessages='4'/> 
-				<MessageCard image='/favicon.ico' groupName='Urul Pottal' lastMessage='hi' lastMessageTime='11:08 am' unReadMessages='4'/> 
-				<MessageCard image='/favicon.ico' groupName='Urul Pottal' lastMessage='hi' lastMessageTime='11:08 am' unReadMessages='4'/> 
+				<MessageCard image='/favicon.ico' onClick={onClick} groupName='Urul Pottal' lastMessage='hi' lastMessageTime='11:08 am' unReadMessages='4'/> 
+				<MessageCard image='/favicon.ico' onClick={onClick} groupName='Urul Pottal' lastMessage='hi' lastMessageTime='11:08 am' unReadMessages='4'/> 
 
 			</div>
 		</div>

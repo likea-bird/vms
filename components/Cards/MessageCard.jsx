@@ -1,9 +1,9 @@
 
 
-export default function MessageCard({image, groupName, lastMessage, lastMessageTime, unReadMessages}) {
+export default function MessageCard({id, image, groupName, lastMessage, lastMessageTime, unReadMessages, onClick}) {
     return (
         <div className='text-white bg-zinc-800 h-24 rounded-xl w-80
-            flex justify-between px-3'>
+            flex justify-between px-3' onClick={()=>onClick(id)}>
 
             <div className='flex space-x-3 items-center bg-'>
                 <img src={image} alt="image" 

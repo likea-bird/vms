@@ -13,7 +13,7 @@ export default function SideMenu({menu, button}) {
       </div>
       <div className="flex flex-col items-center w-full space-y-6 pt-8">
           {button.map((item)=> 
-            <button className='btn-2' onClick={item.onClick}>
+            <button key={item.name} className='btn-2' onClick={item.onClick}>
               {item.name}
             </button>
           )}
