@@ -37,7 +37,7 @@ export default function Chats() {
 
 			<div className='flex flex-col space-y-4'>
 				{chatGroups?.map((item)=>
-					<MessageCard id={item.id} image='/favicon.ico' onClick={onClick} groupName={item.opportunity_name} 
+					<MessageCard key={item.id} id={item.id} image='/favicon.ico' onClick={onClick} groupName={item.opportunity_name} 
 						lastMessage='hi' lastMessageTime='11:08 am' unReadMessages='4'/> 
 				)}
 
