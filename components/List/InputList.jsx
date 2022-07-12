@@ -12,7 +12,7 @@ export default function InputList({values, edit }) {
     return (
     <div className='flex justify-center items-center pt-4'>
 
-        { edit ? 
+        
             <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col items-center space-y-3'>
             {values.map((item)=>
                 item.type == 'text' || 'email' || 'number' ?
@@ -22,11 +22,9 @@ export default function InputList({values, edit }) {
                     <Select label={item.label} name={item.htmlFor}
                         defaultValue={item.defaultValue} register={register} error={errors?.[item.htmlFor]}/>
             )}
-            </form> :
-            <div>
-                
-            </div>
-        }
+            </form> 
+            
+        
     </div>
     )
 }

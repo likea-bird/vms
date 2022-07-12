@@ -1,7 +1,8 @@
 
 
-export default function PageCard({id, heading, date, desc, handleJoinGroup, handleMoreClick, gotoChat, image}) {
+export default function PageCard({id, heading, date, desc, joinedGroup, handleJoinGroup, handleMoreClick, gotoChat, image}) {
   
+  console.log(heading,joinedGroup);
   return (
     <div className='flex justify-between items-center px-4 bg-zinc-800 h-48 w-80 rounded-xl text-white'>
 
@@ -21,7 +22,7 @@ export default function PageCard({id, heading, date, desc, handleJoinGroup, hand
           </div>
           {/* buttons */}
           <div className='flex justify-between w-full'>
-            { handleJoinGroup && 
+            { handleJoinGroup && joinedGroup[0] !== id && 
               <button className='bg-white text-black rounded-xl py-1 px-4 font-semibold' onClick={()=>handleJoinGroup(id)}>
                 Join
               </button> }

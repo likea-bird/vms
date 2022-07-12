@@ -4,10 +4,11 @@ import { useRouter } from 'next/router';
 import { MdLogout, MdOutlineAccountCircle, MdOutlineFormatListBulleted,
   MdOutlineGroup, MdOutlineInfo } from "react-icons/md";
 import { RiContactsBook2Line} from "react-icons/ri";
+import { HiOutlineChat} from "react-icons/hi";
 
 import Header from '@/components/Navigation/Header'
 import SideMenu from '@/components/Navigation/SideMenu'
-import { useAuthContext } from '@/store/Context';
+
 
 export default function Layout({children, route}) {
 
@@ -49,6 +50,7 @@ export default function Layout({children, route}) {
               {name: 'Home', icon: <MdLogout className="menu-icon"/>, onClick: ()=>handleRoute('/app')},
               {name: 'Profile', icon: <MdOutlineAccountCircle className="menu-icon"/>, onClick: ()=>handleRoute('/app/profile')},
               {name: 'Opportunities', icon: <MdOutlineGroup className="menu-icon"/>, onClick: ()=>handleRoute('/app/opportunities')},
+              {name: 'Chats', icon: <HiOutlineChat className="menu-icon"/>, onClick: ()=>handleRoute('/app/chats')},
               {name: 'Contact', icon: <RiContactsBook2Line className="menu-icon"/>, onClick: ()=>handleRoute('/app#contact')},
               {name: 'About Us', icon: <MdOutlineInfo className="menu-icon"/>, onClick: ()=>handleRoute('/app#about')},
               {name: 'Rules', icon: <MdOutlineFormatListBulleted className="menu-icon"/>, onClick: ()=>handleRoute('/app#rules')},

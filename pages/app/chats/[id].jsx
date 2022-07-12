@@ -1,5 +1,9 @@
+import { useState, useRef, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/router"
+
+import { createMessage, getMessages } from "@/lib/supabaseHelpers"
+import { useAuthContext } from "@/store/Context"
 
 import { MdOutlineArrowBack, MdSend } from "react-icons/md"
 
@@ -9,12 +13,33 @@ import SingleMessageCard from "@/components/Cards/SingleMessageCard"
 
 export default function ChatPage() {
 
+	const { user } = useAuthContext()
+
     const router = useRouter()
 
-    const { register, handleSubmit, formState: { errors } } = useForm()
+    const { register, handleSubmit, reset, formState: { errors } } = useForm()
 
-    const onSubmit = () => {
+    const ref = useRef()
 
+    const [messages, setmessages] = useState([])
+    const [error, seterror] = useState(false)
+
+    useEffect(() => {
+      const getData = async () => {
+        await getMessages(router.query.id, setmessages, seterror)
+      }
+      router.isReady && getData()
+    }, [router.isReady])
+    
+
+    useEffect(() => {
+        ref.current.scrollIntoView({behavior: "smooth", block: "end"});
+    }, [messages])
+    
+
+    const onSubmit = async (data) => {
+        await createMessage(router.query.id, user.id, data.message, seterror)
+        reset()
     }
 
     const handleBackClick = () => {
@@ -38,16 +63,12 @@ export default function ChatPage() {
 
             {/* content */}
 
-            <div className='flex flex-col space-y-2 justify-end h-screen items-start px-4 
-                overflow-y-scroll absolute pb-18 w-screen'>
-                <SingleMessageCard/>
-                <SingleMessageCard/>
-                <SingleMessageCard/>
-                <SingleMessageCard/>
-                
-           
-                <SingleMessageCard/>
-                <SingleMessageCard/>
+            <div className={`grid grid-cols-1 gap-y-2 content-end justify-items-stretch px-4 min-h-screen
+                 pb-18 pt-24 w-screen`} 
+                ref={ref}>
+                { messages?.map((item)=>
+                    <SingleMessageCard host={user.id} key={item.id} userId={item.volunteer.id} user={item.volunteer.name} message={item.message} time={item.time}/>
+                )}
             </div>
 
             {/* message */}

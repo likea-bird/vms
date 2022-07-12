@@ -17,22 +17,25 @@ export default function Opportunities() {
   const [toggle, settoggle] = useState('group')
   const [opportunitiesData, setopportunitiesData] = useState(null)
   const [joinedOpportunitiesData, setjoinedOpportunitiesData] = useState(null)
-  const [error, seterror] = useState(null)
+  const [groupId, setgroupId] = useState([])
+  const [error, seterror] = useState(false)
 
   useEffect(() => {
     const getData = async () => {
       const opportunities = await getOpportunities()
-      const joinedOpportunities = await getJoinedOpportunities(user?.id)
       setopportunitiesData(opportunities?.data)
-      setjoinedOpportunitiesData(joinedOpportunities?.data)
-      error && seterror(error)
-    }
-    getData()
-  }, [])
 
+      await getJoinedOpportunities(user?.id, setjoinedOpportunitiesData, setgroupId, seterror)
+
+      opportunities?.error && seterror(true)
+    }
+    user && getData()
+  }, [user])
+  
   const handleJoinGroup = async (id) => {
-    const { error } = await joinGroup({groupId: id, userId: user.id})
-    error && seterror(error)
+    const group = await joinGroup({groupId: groupId == null ? [id] : [...groupId, id], userId: user.id})
+    group?.error && seterror(error)
+    !group?.error && router.push(`/app/chats/${id}`)
   }
   const handleMoreClick = (id) =>{
     router.push(`${router.asPath}/${id}`)
@@ -66,7 +69,8 @@ export default function Opportunities() {
       { toggle == 'group' ? 
         <div className='flex flex-col justify-center space-y-4'>
           {opportunitiesData?.map((item)=> 
-            <PageCard key={item.id} id={item.id} heading={item.opportunity_name} handleJoinGroup={handleJoinGroup}
+            <PageCard key={item.id} id={item.id} joinedGroup={groupId.filter((id)=> item.id == id )} 
+              heading={item.opportunity_name} handleJoinGroup={handleJoinGroup}
               handleMoreClick={handleMoreClick} date={item.date} desc={item?.description}/>
           )}
         </div> : 
