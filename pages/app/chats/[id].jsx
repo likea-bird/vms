@@ -25,32 +25,34 @@ export default function ChatPage() {
     const [messages, setmessages] = useState([])
     const [newMessage, setnewMessage] = useState(null)
     const [error, seterror] = useState(false)
+    
 
     //get messages at initail loading
+    const getData = async () => {
+        await getMessages(1, setmessages, seterror)
+    }
     useEffect(() => {
-      const getData = async () => {
-        await getMessages(router.query.id, setmessages, seterror)
-      }
-      router.isReady && getData()
-    }, [router.isReady])
+      getData()
+    }, [])
     
     
     //get new messages without reloading
     useEffect(() => {
-        const messageListener = supabase.from("chats").on("INSERT", (payload) => {
-            console.log(payload)
-        }).subscribe()
-
+        getData()
+        const messageListener = supabase.from("chats").on("INSERT", (payload) => 
+                setnewMessage(payload.new)
+        ).subscribe()
         return () => {
-            supabase.removeSubscription (messageListener)
-          }
-    }, [])
+            supabase.removeSubscription(messageListener)
+        }
+    },[])
     
-
-
-    // useEffect(() => {
-    //     newMessage && getMessage(newMessage?.id, setmessages, seterror)
-    // }, [newMessage])
+    
+    console.log(newMessage);
+    
+    useEffect(() => {
+        getMessages(router.query.id, setmessages, seterror)
+    }, [newMessage])
     
     
     
@@ -64,6 +66,7 @@ export default function ChatPage() {
     const onSubmit = async (data) => {
         await createMessage(router.query.id, user.id, data.message, seterror)
         reset()
+        // setnewMessage(data.message)
     }
 
     const handleBackClick = () => {

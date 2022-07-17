@@ -3,8 +3,8 @@ import Layout from "@/modules/Layout/Layout"
 
 export default function Home() {
   return (
-    <div className=''>
-      ssss
+    <div className='bg-zinc-800'>
+      ssssssssssssss
     </div>
   )
 }

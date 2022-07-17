@@ -51,6 +51,7 @@ export default function Context({children}) {
             <ChatContext.Provider value={{
                 
             }}>
+              {children}
             </ChatContext.Provider>
         </AuthContext.Provider>
     )
