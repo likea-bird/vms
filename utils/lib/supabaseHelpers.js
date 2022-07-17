@@ -3,7 +3,7 @@ import { supabase } from "../../supabse";
 // ------------------------------------------------------ auth ----------------------------------------------------
 export async function signUp({email, password, data}){
     delete data.password
-
+    data.role = 'user'
     const { user, session, error } = await supabase.auth.signUp({
         email: email,
         password: password,
@@ -44,6 +44,20 @@ export async function signIn({email, password}){
         session: session, 
         error: error?.message
     }
+}
+
+//---------------------------------------------------pofile----------------------------------------------------
+export async function updateProfile(data, setsuccess, seterror, setloading){
+    setloading(true)
+    const { user, error } = await supabase.auth.update({ 
+        data: data
+    })
+    if(error) {
+        seterror(true)
+    } else {
+        setsuccess(true)
+    }
+    setloading(false)
 }
 
 
@@ -109,22 +123,42 @@ export async function getMessages(groupId, setmessages, seterror){
             name,
             id
         )`).match({ group: groupId }).order('created_at', { ascending: true })
-
     if (messages?.error) {
         seterror(true)
     } else {
         setmessages(messages.data)
     }
 }
+export async function getMessage(id, setmessages, seterror){
+    const messages = await supabase.from('chats').select(`
+        *,
+        volunteer (
+            name,
+            id
+        )`).match({ id: id - 1 })
+
+    if (messages?.error) {
+        seterror(true)
+    } else {
+        console.log(messages);
+        setmessages((prev)=> [...prev, messages.data[0]])
+    }
+}
 export async function createMessage(groupId, userId, message, seterror){
-    const date = new Date()
+    // const date = new Date()
     const res = await supabase.from('chats').insert([{ 
         volunteer: userId,
-        created_at: date.toISOString(), 
+        // created_at: date.toISOString(), 
         message: message, 
         group: groupId
     }])
     if(res.error) {
         seterror(true)
     }
+}
+export async function getNewMessages(){
+    const mySubscription = supabase.from('countries').on('INSERT', payload => {
+    console.log('Change received!', payload)
+  })
+  .subscribe()
 }

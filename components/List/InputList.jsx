@@ -1,30 +1,20 @@
 import InputTextX from "@/modules/Form/InputTextX";
-import Select from "@/modules/Form/Select";
-import { useForm } from "react-hook-form";
+import SelectX from "@/modules/Form/SelectX";
 
-export default function InputList({values, edit }) {
-    const { register, handleSubmit, formState: { errors } } = useForm()
-
-    const onSubmit = (data) => {
-        console.log(data);
-    }
+export default function InputList({values, edit, register, errors }) {
 
     return (
-    <div className='flex justify-center items-center pt-4'>
-
-        
-            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col items-center space-y-3'>
+        <div className='flex flex-col justify-center pt-4 items-center space-y-3'>
             {values.map((item)=>
-                item.type == 'text' || 'email' || 'number' ?
-                    <InputTextX label={item.label} htmlFor={item.htmlFor} defaultValue={item.defaultValue} 
-                        type={item.type} register={register} error={errors?.[item.htmlFor]} key={item.htmlFor}/>
+                item.type == 'text' || item.type == 'email' || item.type == 'number' || item.type == 'tel' ?
+                    <InputTextX label={item.label} htmlFor={item.htmlFor} 
+                        type={item.type} register={register} error={errors?.[item.htmlFor]} 
+                        disabled={edit ? false : true} key={item.htmlFor}/>
                 :
-                    <Select label={item.label} name={item.htmlFor}
-                        defaultValue={item.defaultValue} register={register} error={errors?.[item.htmlFor]}/>
+                    <SelectX label={item.label} name={item.htmlFor} disabled={edit ? false : true}
+                        register={register} 
+                        key={item.htmlFor} error={errors?.[item.htmlFor]}/>
             )}
-            </form> 
-            
-        
-    </div>
+        </div> 
     )
 }

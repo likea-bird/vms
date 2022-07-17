@@ -2,13 +2,14 @@ import { useState, useRef, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/router"
 
-import { createMessage, getMessages } from "@/lib/supabaseHelpers"
+import { createMessage, getMessage, getMessages } from "@/lib/supabaseHelpers"
 import { useAuthContext } from "@/store/Context"
 
 import { MdOutlineArrowBack, MdSend } from "react-icons/md"
 
 import WithAuth from "@/modules/Layout/WithAuth"
 import SingleMessageCard from "@/components/Cards/SingleMessageCard"
+import { supabase } from "supabse"
 
 
 export default function ChatPage() {
@@ -22,8 +23,10 @@ export default function ChatPage() {
     const ref = useRef()
 
     const [messages, setmessages] = useState([])
+    const [newMessage, setnewMessage] = useState(null)
     const [error, seterror] = useState(false)
 
+    //get messages at initail loading
     useEffect(() => {
       const getData = async () => {
         await getMessages(router.query.id, setmessages, seterror)
@@ -31,12 +34,33 @@ export default function ChatPage() {
       router.isReady && getData()
     }, [router.isReady])
     
+    
+    //get new messages without reloading
+    useEffect(() => {
+        const messageListener = supabase.from("chats").on("INSERT", (payload) => {
+            console.log(payload)
+        }).subscribe()
 
+        return () => {
+            supabase.removeSubscription (messageListener)
+          }
+    }, [])
+    
+
+
+    // useEffect(() => {
+    //     newMessage && getMessage(newMessage?.id, setmessages, seterror)
+    // }, [newMessage])
+    
+    
+    
+    //scroll down for new message
     useEffect(() => {
         ref.current.scrollIntoView({behavior: "smooth", block: "end"});
     }, [messages])
     
 
+    // create a new message
     const onSubmit = async (data) => {
         await createMessage(router.query.id, user.id, data.message, seterror)
         reset()
@@ -74,7 +98,7 @@ export default function ChatPage() {
             {/* message */}
             <form onSubmit={handleSubmit(onSubmit)} 
                 className='flex justify-between space-x-3 px-2 bg-zinc-800 h-14 w-screen fixed bottom-0 z-50'>
-                <input type='text' {...register("message")}
+                <input type='text' {...register("message", {required: true})}
                     className='text-white bg-transparent outline-none w-full'/>
                 <button type='submit'>
                     <MdSend className='w-8 h-8 text-white'/>

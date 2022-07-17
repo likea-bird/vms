@@ -2,7 +2,6 @@
 
 export default function PageCard({id, heading, date, desc, joinedGroup, handleJoinGroup, handleMoreClick, gotoChat, image}) {
   
-  console.log(heading,joinedGroup);
   return (
     <div className='flex justify-between items-center px-4 bg-zinc-800 h-48 w-80 rounded-xl text-white'>
 

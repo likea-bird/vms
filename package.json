@@ -16,6 +16,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.33.1",
     "react-icons": "^4.4.0",
+    "react-supabase": "^0.2.0",
     "reactjs-localstorage": "^1.0.1"
   },
   "devDependencies": {
