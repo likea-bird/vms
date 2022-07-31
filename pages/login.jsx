@@ -3,18 +3,16 @@ import Link from 'next/link'
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form'
 
-import { useAuthContext } from '@/store/Context';
 import { signIn } from '@/lib/supabaseHelpers'
 
 import InputText from '@/modules/Form/InputText';
 import Layout from '@/modules/Layout/Layout';
+import InputTextX from '@/modules/Form/InputTextX';
 
 
 export default function Login() {
 
     const router = useRouter()
-
-    const { setuser, setsession } = useAuthContext()
 
     const { register, handleSubmit, formState: { errors } } = useForm()
 
@@ -22,13 +20,7 @@ export default function Login() {
     const [loading, setloading] = useState(false)
 
     const onSubmit = async (data) => {
-        seterror(null)
-        setloading(true)
-        const {user, session, error} = await signIn({email: data.email, password: data.password})
-        setloading(false)
-        setuser(user)
-        setsession(session)
-        error ? seterror(error) : router.replace('/app')
+        await signIn({email: data.email, password: data.password, setloading: setloading, seterror: seterror, router: router})
     }
     
      return (
@@ -39,8 +31,8 @@ export default function Login() {
                 <h4 className='text-white'>Login</h4>
                 
                 <form className='flex flex-col space-y-4' onSubmit={handleSubmit(onSubmit)}>
-                    <InputText type='email' htmlFor='email' label='Email' register={register} error={errors['email']}/>
-                    <InputText type='password' htmlFor='password' label='Password' register={register} error={errors['password']}/>
+                    <InputTextX type='email' htmlFor='email' label='Email' register={register} error={errors['email']}/>
+                    <InputTextX type='password' htmlFor='password' label='Password' register={register} error={errors['password']}/>
                     <Link href='/reset-password'>
                         <p className=" text-right text-white px-2 cursor-pointer">Forgot Password?</p>
                     </Link>

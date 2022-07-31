@@ -1,5 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
+
+import { supabase } from 'supabse';
+import { signOut } from '@/lib/supabaseHelpers';
 
 import { MdLogout, MdOutlineAccountCircle, MdOutlineFormatListBulleted,
   MdOutlineGroup, MdOutlineInfo } from "react-icons/md";
@@ -12,9 +15,12 @@ import SideMenu from '@/components/Navigation/SideMenu'
 
 export default function Layout({children, route}) {
 
+
   const router = useRouter()
 
   const [openMenu, setopenMenu] = useState(false)
+  const [error, seterror] = useState(false)
+  const [loading, setloading] = useState(false)
 
 	const handleMenu = () => {
 		setopenMenu(!openMenu)
@@ -25,9 +31,19 @@ export default function Layout({children, route}) {
     handleMenu()
   }
 
+  const handleLogout = async () => {
+    await signOut({seterror: seterror, setloading: setloading, router: router})
+  }
+
+  useEffect(() => {
+    const user = supabase.auth.user()
+    user == null && route !== 'no-auth' && router.replace('/login')
+  }, [])
+  
+
 
   return (
-    <div className='flex flex-col relative '>
+    <div className='flex flex-col relative bg-zinc-100 '>
       { route == 'no-auth' ?
         <div>
           <Header handleMenu={handleMenu} openMenu={openMenu}/>
@@ -49,13 +65,13 @@ export default function Layout({children, route}) {
             <SideMenu menu={[
               {name: 'Home', icon: <MdLogout className="menu-icon"/>, onClick: ()=>handleRoute('/app')},
               {name: 'Profile', icon: <MdOutlineAccountCircle className="menu-icon"/>, onClick: ()=>handleRoute('/app/profile')},
+              {name: 'Rules', icon: <MdOutlineFormatListBulleted className="menu-icon"/>, onClick: ()=>handleRoute('/app#rules')},
               {name: 'Opportunities', icon: <MdOutlineGroup className="menu-icon"/>, onClick: ()=>handleRoute('/app/opportunities')},
               {name: 'Chats', icon: <HiOutlineChat className="menu-icon"/>, onClick: ()=>handleRoute('/app/chats')},
-              {name: 'Contact', icon: <RiContactsBook2Line className="menu-icon"/>, onClick: ()=>handleRoute('/app#contact')},
               {name: 'About Us', icon: <MdOutlineInfo className="menu-icon"/>, onClick: ()=>handleRoute('/app#about')},
-              {name: 'Rules', icon: <MdOutlineFormatListBulleted className="menu-icon"/>, onClick: ()=>handleRoute('/app#rules')},
+              {name: 'Contact', icon: <RiContactsBook2Line className="menu-icon"/>, onClick: ()=>handleRoute('/app#contact')},
             ]} button={[
-              {name: 'Logout', onClick: ()=>handleRoute('/login')}
+              {name: 'Logout', onClick: handleLogout, loading: loading}
             ]}/>}
         </div>
       }

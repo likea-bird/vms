@@ -19,23 +19,18 @@ export default function Opportunities() {
   const [joinedOpportunitiesData, setjoinedOpportunitiesData] = useState(null)
   const [groupId, setgroupId] = useState([])
   const [error, seterror] = useState(false)
+  const [loading, setloading] = useState(false)
 
   useEffect(() => {
     const getData = async () => {
-      const opportunities = await getOpportunities()
-      setopportunitiesData(opportunities?.data)
-
-      await getJoinedOpportunities(user?.id, setjoinedOpportunitiesData, setgroupId, seterror)
-
-      opportunities?.error && seterror(true)
+      await getOpportunities({setopportunitiesData: setopportunitiesData, seterror: seterror, setloading: setloading})
+      await getJoinedOpportunities({id: user?.id, setgroupId: setgroupId, setjoinedOpportunitiesData: setjoinedOpportunitiesData, seterror: seterror, setloading: setloading})
     }
     user && getData()
   }, [user])
   
   const handleJoinGroup = async (id) => {
-    const group = await joinGroup({groupId: groupId == null ? [id] : [...groupId, id], userId: user.id})
-    group?.error && seterror(error)
-    !group?.error && router.push(`/app/chats/${id}`)
+    await joinGroup({groupId: groupId == null ? [id] : [...groupId, id], userId: user.id, seterror: seterror, setloading: setloading, router: router, id: id})
   }
   const handleMoreClick = (id) =>{
     router.push(`${router.asPath}/${id}`)
@@ -70,13 +65,13 @@ export default function Opportunities() {
         <div className='flex flex-col justify-center space-y-4'>
           {opportunitiesData?.map((item)=> 
             <PageCard key={item.id} id={item.id} joinedGroup={groupId.filter((id)=> item.id == id )} 
-              heading={item.opportunity_name} handleJoinGroup={handleJoinGroup}
+              heading={item.name} handleJoinGroup={handleJoinGroup}
               handleMoreClick={handleMoreClick} date={item.date} desc={item?.description}/>
           )}
         </div> : 
         <div className='flex flex-col justify-center space-y-4'>
           {joinedOpportunitiesData?.map((item)=> 
-            <PageCard key={item.id} id={item.id} heading={item.opportunity_name} gotoChat={gotoChat}
+            <PageCard key={item.id} id={item.id} heading={item.name} gotoChat={gotoChat}
               date={item.date} desc={item?.description}/>
           )}
         </div>

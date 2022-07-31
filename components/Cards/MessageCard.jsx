@@ -9,19 +9,11 @@ export default function MessageCard({id, image, groupName, lastMessage, lastMess
                 <img src={image} alt="image" 
                     className='rounded-full w-18 h-18 '/>
 
-                <div className='flex flex-col'>
-                    <h6 >{groupName}</h6>
-                    <p className='text-base text-zinc-400'>{lastMessage}</p>
+                <div className='flex flex-col items-center'>
+                    <h6  className="text-xl">{groupName}</h6>
+                    {/* <p className='text-base text-zinc-400'>{lastMessage}</p> */}
                 </div>
             </div>    
-
-            <div className='flex flex-col space-y-1 items-end justify-center pr-0.5'>
-                <p className='text-sm'>{lastMessageTime}</p>
-                <p className='flex justify-center items-center bg-white w-6 h-6
-                    rounded-full text-zinc-900 font-semibold'>
-                    {unReadMessages}
-                </p>
-            </div>
         </div>
     )
 }

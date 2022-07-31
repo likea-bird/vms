@@ -16,12 +16,11 @@ export default function Chats() {
 
 	const [chatGroups, setchatGroups] = useState(null)
 	const [error, seterror] = useState(false)
+	const [loading, setloading] = useState(false)
 
 	useEffect(() => {
 	  const getData = async () => {
-		const chats = await getChatGroups(user?.id)
-		chats?.data &&  setchatGroups(chats?.data)
-		chats?.error && seterror(true)
+		await getChatGroups({userId: user?.id, setchatGroups: setchatGroups, seterror: seterror, setloading: setloading})
 	  }
 	  user && getData()
 	}, [user])
@@ -37,10 +36,9 @@ export default function Chats() {
 
 			<div className='flex flex-col space-y-4'>
 				{chatGroups?.map((item)=>
-					<MessageCard key={item.id} id={item.id} image='/favicon.ico' onClick={onClick} groupName={item.opportunity_name} 
-						lastMessage='hi' lastMessageTime='11:08 am' unReadMessages='4'/> 
+					<MessageCard key={item.id} id={item.id} image='/favicon.ico' onClick={onClick} groupName={item.name} 
+						lastMessage='hi' /> 
 				)}
-
 			</div>
 		</div>
   )

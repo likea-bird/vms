@@ -9,6 +9,8 @@ import { signUp } from '@/lib/supabaseHelpers';
 import InputText from '@/modules/Form/InputText';
 import Select from '@/modules/Form/Select';
 import Layout from '@/modules/Layout/Layout';
+import InputTextX from '@/modules/Form/InputTextX';
+import SelectX from '@/modules/Form/SelectX';
 
 
 export default function Register() {
@@ -24,12 +26,14 @@ export default function Register() {
 
     const onSubmit = async (data) => {
         seterror(null)
-        setloading(true)
-        const {user, session, error} = await signUp({email: data.email, password: data.password, data: data})
-        setloading(false)
-        setuser(user)
-        setsession(session)
-        error ? seterror(error) : router.replace('/app')
+        await signUp({
+            email: data.email, 
+            password: data.password, 
+            data: data, 
+            setloading: setloading,
+            seterror: seterror,
+            router: router
+        })
     }
     
      return (
@@ -40,16 +44,16 @@ export default function Register() {
                     <h4 className='text-white'>Register</h4>
                     
                     <form className='flex flex-col space-y-4' onSubmit={handleSubmit(onSubmit)}>
-                        <InputText type='text' htmlFor='name' label='Full Name' register={register} error={errors['name']}/>
-                        <Select name='gender' label='Gender' register={register} values={['male','female']} error={errors['gender']}/>
-                        <InputText type='number' htmlFor='age' label='Age' register={register} error={errors['age']}/>
-                        <InputText type='email' htmlFor='email' label='Email' register={register} error={errors['email']}/>
-                        <InputText type='tel' htmlFor='phone' label='Phone Number' register={register} error={errors['phone']}/>
-                        <Select name='district' label='District' register={register} error={errors['district']}/>
-                        <InputText type='text' htmlFor='city' label='City' register={register} error={errors['city']}/>
-                        <InputText type='number' htmlFor='pin' label='Pincode' register={register} error={errors['pin']}/>
-                        <InputText type='text' htmlFor='locality' label='Locality' register={register} error={errors['pin']}/>
-                        <InputText type='password' htmlFor='password' label='Password' register={register} error={errors['password']}/>
+                        <InputTextX type='text' htmlFor='name' label='Full Name' register={register} error={errors['name']}/>
+                        <SelectX name='gender' label='Gender' register={register} values={['male','female']} error={errors['gender']}/>
+                        <InputTextX type='date' htmlFor='dob' label='Date of Birth' register={register} error={errors['dob']}/>
+                        <InputTextX type='tel' htmlFor='phone' label='Phone Number' register={register} error={errors['phone']}/>
+                        <InputTextX type='text' htmlFor='street' label='Street' register={register} error={errors['street']}/>
+                        <InputTextX type='text' htmlFor='city' label='City' register={register} error={errors['city']}/>
+                        <SelectX name='district' label='District' register={register} error={errors['district']}/>
+                        <InputTextX type='number' htmlFor='pin' label='Pincode' register={register} error={errors['pin']}/>
+                        <InputTextX type='email' htmlFor='email' label='Email' register={register} error={errors['email']}/>
+                        <InputTextX type='password' htmlFor='password' label='Password' register={register} error={errors['password']}/>
                         <button className='sbmt' type='submit'>
                             {loading ? 'Loading...' : 'Register' }
                         </button>

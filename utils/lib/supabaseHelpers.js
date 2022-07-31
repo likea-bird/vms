@@ -1,10 +1,10 @@
 import { supabase } from "../../supabse";
 
 // ------------------------------------------------------ auth ----------------------------------------------------
-export async function signUp({email, password, data}){
+export async function signUp({email, password, data, setloading, seterror, router}){
+    setloading(true)
     delete data.password
-    data.role = 'user'
-    const { user, session, error } = await supabase.auth.signUp({
+    const { user, error } = await supabase.auth.signUp({
         email: email,
         password: password,
     },
@@ -13,64 +13,61 @@ export async function signUp({email, password, data}){
     })
 
     // create a public schema table for volunteers
+    data.id = user?.id
     if(!error){
-        const date = new Date()
-        const volunteer = await supabase.from('volunteers').insert([{ 
-            id: user.id, created_at: date.toISOString(), name: data.name, group: null 
-        }])
-
-        if(volunteer.error){
-            return {
-                error: volunteer.error.message
-            }
-        }
+        const volunteer = await supabase.from('volunteers').insert([data])
+        volunteer?.error ? seterror(true) : router.replace('/app')
+    } else{
+        seterror(true)
     }
-
-    return {
-        user: user, 
-        session: session, 
-        error: error?.message
-    }
+    setloading(false)
 }
 
-export async function signIn({email, password}){
-    const { user, session, error } = await supabase.auth.signIn({
+export async function signIn({email, password, seterror, setloading, router}){
+    setloading(true)
+    const res = await supabase.auth.signIn({
         email: email,
         password: password,
     })
+    res?.error ? seterror(true) : router.replace('/app')
+    setloading(false)
 
-    return {
-        user: user, 
-        session: session, 
-        error: error?.message
-    }
+}
+
+export async function signOut({seterror, setloading, router}){
+    setloading(true)
+    const res = await supabase.auth.signOut()
+    res?.error ? seterror(true) : router.push('/')
+    setloading(false)
+
 }
 
 //---------------------------------------------------pofile----------------------------------------------------
-export async function updateProfile(data, setsuccess, seterror, setloading){
+export async function updateProfile(id, data, setsuccess, seterror, setloading){
     setloading(true)
-    const { user, error } = await supabase.auth.update({ 
+    const auth = await supabase.auth.update({ 
         data: data
     })
-    if(error) {
+    if(auth?.error) {
         seterror(true)
     } else {
-        setsuccess(true)
+        const user = await supabase.from('volunteers').update(data).match({id: id})
+        user?.error ? seterror(true) : setsuccess(true)
     }
     setloading(false)
 }
 
 
 // ------------------------------------------------Opportunities----------------------------------------------
-export async function getOpportunities(){
-    const { data, error } = await supabase.from('opportunities').select()
-    return {
-        data: data, 
-        error: error
-    }
+export async function getOpportunities({setopportunitiesData, seterror, setloading}){
+    setloading(true)
+    const opportunities = await supabase.from('opportunities').select()
+    opportunities?.error ? seterror(true) :setopportunitiesData(opportunities.data)
+    setloading(false)
 }
-export async function getJoinedOpportunities(userId, setjoinedOpportunitiesData, setgroupId, seterror){
-    const volunteer = await supabase.from('volunteers').select('group').match({ id: userId })
+export async function getJoinedOpportunities({id, setjoinedOpportunitiesData, setgroupId, seterror, setloading}){
+    setloading(true)
+    const volunteer = await supabase.from('volunteers').select('group').match({ id: id })
     if(!volunteer?.error && volunteer?.data[0]?.group !== null){
         const opportunities = await supabase.from('opportunities').select().in('id', volunteer?.data[0]?.group)
         if(!opportunities?.error) {
@@ -82,39 +79,39 @@ export async function getJoinedOpportunities(userId, setjoinedOpportunitiesData,
     } else {
         seterror(true)
     }
+    setloading(false)
 }
-export async function getOpportunity(id){
-    const { data, error } = await supabase.from('opportunities').select().match({ id: id })
-    return {
-        data: data, 
-        error: error
-    }
-}
-export async function joinGroup({groupId, userId}){
-    const { error } = await supabase.from('volunteers').update({ group: groupId }).match({ id: userId }) 
 
-    if (error) {
-        return {
-            error: true
-        }   
+export async function getOpportunityById({id, seterror, setloading, setopportunityData}){
+    setloading(true)
+    const opportunity = await supabase.from('opportunities').select().match({ id: id })
+    opportunity?.error ? seterror(true) : setopportunityData(opportunity.data[0])
+    setloading(false)
+}
+
+export async function joinGroup({groupId, userId, seterror, setloading, router, id}){
+    setloading(true)
+    const group = await supabase.from('volunteers').update({ group: groupId }).match({ id: userId }) 
+    if(group?.error){
+        seterror(true)
+    }else{
+        router.replace(`/app/chats/${id}`)
     }
+    setloading(false)
 }
 
 // --------------------------------------------------chats-----------------------------------------------------
-export async function getChatGroups(userId){
+export async function getChatGroups({userId, setchatGroups, seterror, setloading}){
+    setloading(true)
     const volunteer = await supabase.from('volunteers').select('group').match({ id: userId })
-    if(!volunteer?.error && volunteer?.data[0]?.group !== null){
+    if(volunteer?.error){
+        seterror(true)
+    }else if(volunteer?.data[0]?.group !== null){
         const chatGroups = await supabase.from('opportunities').select().in('id', volunteer?.data[0]?.group)
-        // console.log(chatGroups?.data);
-        return {
-            data: chatGroups?.data, 
-            error: chatGroups?.error
-        }
-    } else {
-        return {
-            error: true 
-        }
+        chatGroups?.error ? seterror(true) : setchatGroups(chatGroups.data)
+
     }
+    setloading(false)
 }
 export async function getMessages(groupId, setmessages, seterror){
     const messages = await supabase.from('chats').select(`

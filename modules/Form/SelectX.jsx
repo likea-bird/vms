@@ -1,6 +1,6 @@
 import { BsChevronDown } from "react-icons/bs";
 
-export default function Select({label, name, register, disabled, error}){
+export default function SelectX({label, name, register, disabled, error}){
 
   const values = name == 'gender' 
     ? ['Male','Female']
@@ -9,12 +9,12 @@ export default function Select({label, name, register, disabled, error}){
 
   return(
     <div className="flex flex-col justify-center relative text-white">
-        <label className='absolute top-2 text-zinc-500 px-3 font-semibold text-sm'>
+        <label className='absolute top-2 text-white px-3 font-semibold text-sm'>
           {label}
         </label>
         <select {...register(name)}
-            className={`bg-zinc-800 border border-transparent outline-none focus:border-blue-600
-            flex pt-4 disabled:bg-zinc-800
+            className={`bg-zinc-800 border border-zinc-700 outline-none focus:border-blue-600
+            flex pt-4 disabled:bg-zinc-800 disabled:text-white
             rounded-xl px-3 w-80 h-16 placeholder-zinc-500 ${error && 'border-rose-600'}`}
             disabled={disabled}>
             {values?.map((item)=> 

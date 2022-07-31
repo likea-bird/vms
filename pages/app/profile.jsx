@@ -27,7 +27,7 @@ export default function Profile() {
       }, [user]);
 
     const onSubmit = async (data) => {
-        await updateProfile(data, setsuccess, seterror, setloading)
+        await updateProfile(user.id, data, setsuccess, seterror, setloading)
         seteditClicked(false)
     }
 
@@ -53,7 +53,7 @@ export default function Profile() {
                                 {loading ? 'Saving...' :'Save'}
                             </button>
                             <button className='bg-rose-700 text-white rounded-xl px-4 h-10 font-semibold'
-                                onClick={()=>seteditClicked(false)}>
+                                onClick={()=>{seteditClicked(false); reset(user?.user_metadata)}}>
                                 Cancel
                             </button>
                         </div>
@@ -63,13 +63,13 @@ export default function Profile() {
                 <div className='flex flex-col'>
                     <InputList values={[
                         {label: 'Name', htmlFor:'name', type:'text', },
-                        {label: 'Age', htmlFor:'age', type:'number', },
+                        {label: 'Date of Birth', htmlFor:'dob', type:'date', },
                         {label: 'Gender', htmlFor:'gender', type:'select', },
                         {label: 'Email', htmlFor:'email', type:'email', },
                         {label: 'Phone Number', htmlFor:'phone', type:'tel', },
                         {label: 'District', htmlFor:'district', type:'select', },
                         {label: 'City', htmlFor:'city', type:'text', },
-                        {label: 'Locality', htmlFor:'locality', type:'text', },
+                        {label: 'Street', htmlFor:'street', type:'text', },
                         {label: 'Pincode', htmlFor:'pin', type:'number', },
                     ]} register={register} errors={errors}
                     edit={editClicked} />
